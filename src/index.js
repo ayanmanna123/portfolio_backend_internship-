@@ -38,6 +38,28 @@ app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // 3. API Health & Status Endpoint
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: '🚀 Custom Portfolio CMS Backend API is running successfully!',
+    status: 'online',
+    timestamp: new Date().toISOString(),
+    environment: env.NODE_ENV,
+    healthCheck: '/api/health',
+    endpoints: {
+      auth: '/api/auth',
+      about: '/api/about',
+      skills: '/api/skills',
+      projects: '/api/projects',
+      blogs: '/api/blogs',
+      experience: '/api/experience',
+      testimonials: '/api/testimonials',
+      services: '/api/services',
+      contact: '/api/contact',
+      upload: '/api/upload'
+    }
+  });
+});
+
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'online',
