@@ -24,8 +24,34 @@ const app = express();
 
 // 1. Security & Core Middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
+
+const allowedOrigins = [
+  'https://portfolio-frontend-cms-internship.vercel.app',
+  'https://portfolio-frontend-internship.vercel.app',
+  env.CLIENT_URL,
+  env.ADMIN_URL,
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:4173'
+].filter(Boolean);
+
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps, curl, postman)
+    if (!origin) return callback(null, true);
+
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.endsWith('.vercel.app') ||
+      origin.includes('localhost')
+    ) {
+      return callback(null, true);
+    }
+
+    // Default fallback: allow origin
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
