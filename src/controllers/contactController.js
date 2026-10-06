@@ -20,13 +20,13 @@ exports.sendMessage = asyncHandler(async (req, res, next) => {
     message
   });
 
-  // 2. Trigger Email Notification
-  await sendContactEmail({
+  // 2. Trigger Email Notification in background (non-blocking)
+  sendContactEmail({
     name,
     email,
     subject,
     message
-  });
+  }).catch((err) => console.error('Background email notification error:', err?.message || err));
 
   res.status(201).json({
     success: true,
